@@ -1,6 +1,6 @@
 --[[\
-    Script Name: Cutie Hub V2 (Blox Fruits)
-    Features: Glassy Hitbox, Clay Graphics V3, FPS Counter, Auto Fruit Teleport, ESP Categories (Players, Fruits, Mobs)
+    Script Name: Cutie Hub V3 (Blox Fruits)
+    Features: Glassy Hitbox, Clay Graphics V3, FPS Counter, Smooth Fly to Fruit, ESP Categories
 ]]--
 
 local Players = game:GetService("Players")
@@ -22,10 +22,10 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "CutieHub_UI"
 ScreenGui.ResetOnSpawn = false
 
-local success = pcall(function()
+pcall(function()
     ScreenGui.Parent = CoreGui
 end)
-if not success then
+if not ScreenGui.Parent then
     ScreenGui.Parent = PlayerGui
 end
 
@@ -124,7 +124,7 @@ MainStroke.Parent = MainFrame
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 42)
 Title.BackgroundColor3 = Color3.fromRGB(240, 235, 250)
-Title.Text = "  ✨ Cutie Hub V2 ✨"
+Title.Text = "  ✨ Cutie Hub V3 ✨"
 Title.TextColor3 = Color3.fromRGB(30, 25, 40)
 Title.TextSize = 16
 Title.Font = Enum.Font.FredokaOne
@@ -246,7 +246,7 @@ local SizeCorner = Instance.new("UICorner")
 SizeCorner.CornerRadius = UDim.new(0, 10)
 SizeCorner.Parent = SizeBox
 
-local AutoFruitBtn = createRoundedButton(135, "Auto Teleport Fruit: OFF")
+local AutoFruitBtn = createRoundedButton(135, "Smooth Fly to Fruit: OFF")
 local EspPlayerBtn = createRoundedButton(180, "ESP Player: OFF")
 local EspFruitBtn  = createRoundedButton(225, "ESP Fruit: OFF")
 local EspMobBtn    = createRoundedButton(270, "ESP Monster/Boss: OFF")
@@ -345,31 +345,43 @@ HitboxBtn.MouseButton1Click:Connect(function()
     sendNotification("Hitbox", hitboxEnabled and "Activated" or "Deactivated")
 end)
 
--- 3. ระบบบินวาร์ปเก็บผลไม้ (Auto Teleport to Devil Fruit)
-TaskActive = task.spawn(function()
+-- 3. ระบบบินสมูทไปเก็บผลไม้ (Smooth Fly to Fruit)
+task.spawn(function()
     while true do
-        task.wait(1)
+        task.wait(1.5)
         if autoFruitEnabled then
             pcall(function()
+                local targetPart = nil
+                -- ค้นหาผลไม้ใน Workspace
                 for _, obj in ipairs(Workspace:GetChildren()) do
                     if obj:IsA("Tool") and obj:FindFirstChild("Handle") then
-                        -- เช็คว่าเป็นผลไม้ (ปกติชื่อผลไม้ใน Blox Fruits จะลงท้ายด้วย Fruit หรือมี Handle)
-                        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                            LocalPlayer.Character.HumanoidRootPart.CFrame = obj.Handle.CFrame + Vector3.new(0, 3, 0)
-                            sendNotification("Auto Fruit", "Teleported to Fruit!")
-                            task.wait(0.5)
+                        targetPart = obj.Handle
+                        break
+                    end
+                end
+                if not targetPart then
+                    for _, obj in ipairs(Workspace:GetDescendants()) do
+                        if obj.Name:lower():find("fruit") and obj:IsA("BasePart") and not obj.Parent:FindFirstChild("Humanoid") then
+                            targetPart = obj
+                            break
                         end
                     end
                 end
-                -- ค้นหาในโฟกัสสำรอง
-                for _, obj in ipairs(Workspace:GetDescendants()) do
-                    if obj.Name:lower():find("fruit") and obj:IsA("BasePart") then
-                        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                            LocalPlayer.Character.HumanoidRootPart.CFrame = obj.CFrame + Vector3.new(0, 3, 0)
-                            sendNotification("Auto Fruit", "Found Fruit Dropped!")
-                            task.wait(1)
-                        end
-                    end
+
+                -- ถ้าเจอผลไม้ ให้ใช้ Tween บินไปหาอย่างนิ่มนวล
+                if targetPart and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local hrp = LocalPlayer.Character.HumanoidRootPart
+                    local distance = (hrp.Position - targetPart.Position).Magnitude
+                    local flySpeed = 150 -- ความเร็วในการบิน
+                    local timeToTravel = math.clamp(distance / flySpeed, 0.5, 5)
+
+                    sendNotification("Auto Fruit", "Flying to Fruit!")
+                    local tweenInfo = TweenInfo.new(timeToTravel, Enum.EasingStyle.Linear)
+                    local tween = TweenService:Create(hrp, tweenInfo, {CFrame = targetPart.CFrame + Vector3.new(0, 3, 0)})
+                    tween:Play()
+                    
+                    -- รอจนกว่าจะบินถึงหรือหมดเวลา
+                    task.wait(timeToTravel + 0.5)
                 end
             end)
         end
@@ -378,12 +390,12 @@ end)
 
 AutoFruitBtn.MouseButton1Click:Connect(function()
     autoFruitEnabled = not autoFruitEnabled
-    AutoFruitBtn.Text = "Auto Teleport Fruit: " .. (autoFruitEnabled and "ON" or "OFF")
+    AutoFruitBtn.Text = "Smooth Fly to Fruit: " .. (autoFruitEnabled and "ON" or "OFF")
     AutoFruitBtn.TextColor3 = autoFruitEnabled and Color3.fromRGB(0, 160, 100) or Color3.fromRGB(30, 25, 40)
-    sendNotification("Auto Fruit", autoFruitEnabled and "Searching for Fruits..." : "Stopped")
+    sendNotification("Auto Fruit", autoFruitEnabled and "Fly to Fruit Enabled" or "Stopped")
 end)
 
--- 4. ระบบ ESP (มองทะลุ) ฟังก์ชันพ่วงไฮไลท์
+-- 4. ระบบ ESP (มองทะลุ)
 local function createHighlight(parent, color)
     if not parent:FindFirstChild("CutieESP") then
         local hl = Instance.new("Highlight")
@@ -417,15 +429,15 @@ RunService.RenderStepped:Connect(function()
     -- ESP Fruit
     if espFruitEnabled then
         for _, obj in ipairs(Workspace:GetDescendants()) do
-            if obj.Name:lower():find("fruit") and obj:IsA("Model") then
-                createHighlight(obj, Color3.fromRGB(255, 50, 50))
-            elseif obj.Name:lower():find("fruit") and obj:IsA("BasePart") and not obj.Parent:FindFirstChild("Humanoid") then
-                createHighlight(obj, Color3.fromRGB(255, 50, 50))
+            if obj.Name:lower():find("fruit") and (obj:IsA("Model") or obj:IsA("BasePart")) then
+                if not obj:FindFirstChild("Humanoid") then
+                    createHighlight(obj, Color3.fromRGB(255, 50, 50))
+                end
             end
         end
     end
 
-    -- ESP Monster/Boss (เช็คใน Workspace.Enemies หรือโมเดลที่มี Humanoid)
+    -- ESP Monster/Boss
     if espMobEnabled then
         local enemiesFolder = Workspace:FindFirstChild("Enemies")
         if enemiesFolder then
@@ -446,36 +458,4 @@ end)
 
 EspFruitBtn.MouseButton1Click:Connect(function()
     espFruitEnabled = not espFruitEnabled
-    EspFruitBtn.Text = "ESP Fruit: " .. (espFruitEnabled and "ON" or "OFF")
-    EspFruitBtn.TextColor3 = espFruitEnabled and Color3.fromRGB(0, 160, 100) or Color3.fromRGB(30, 25, 40)
-end)
-
-EspMobBtn.MouseButton1Click:Connect(function()
-    espMobEnabled = not espMobEnabled
-    EspMobBtn.Text = "ESP Monster/Boss: " .. (espMobEnabled and "ON" or "OFF")
-    EspMobBtn.TextColor3 = espMobEnabled and Color3.fromRGB(0, 160, 100) or Color3.fromRGB(30, 25, 40)
-end)
-
--- 5. Clay Graphics V3
-ClayBtn.MouseButton1Click:Connect(function()
-    clayEnabled = not clayEnabled
-    ClayBtn.Text = "Clay Graphics V3: " .. (clayEnabled and "ON" or "OFF")
-    ClayBtn.TextColor3 = clayEnabled and Color3.fromRGB(0, 160, 100) or Color3.fromRGB(30, 25, 40)
-    sendNotification("Clay Graphics V3", clayEnabled and "Optimized" or "Normal")
-
-    pcall(function()
-        if clayEnabled then
-            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
-            for _, obj in ipairs(Workspace:GetDescendants()) do
-                if obj:IsA("BasePart") then
-                    obj.Material = Enum.Material.SmoothPlastic
-                    obj.Reflectance = 0
-                elseif obj:IsA("Texture") or obj:IsA("Decal") then
-                    obj.Transparency = 1
-                end
-            end
-        end
-    end)
-end)
-
-sendNotification("Cutie Hub V2", "Successfully Loaded!")
+    EspFruitBtn.Text = "ESP Fruit: " .. (espFruitEnabled and "ON" or "OFF
