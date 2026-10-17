@@ -1,8 +1,6 @@
 --[[\
-    Script Name: Noxus Magnum Opus | Blox Fruits [Decade Edition - Unlimited]
-    Architect: Hardcore Obsessive Developer (10 Years Refinement)
-    Features: Enterprise Architecture, Memory Leak Free, Advanced Tween Flight (Unlimited), 
-              Fast Attack, Hitbox, Box ESP, Aimbot, Potato Graphics (No Lag / Mobile Optimized)
+    Script Name: Noxus Apex Hub | Blox Fruits [Masterpiece Edition]
+    Features: Next-Gen Cyber UI, High-Altitude Safe Tween Flight, Smart Tool Handling, Fast Attack, Hitbox, ESP
 ]]--
 
 local Players = game:GetService("Players")
@@ -18,12 +16,11 @@ local LocalPlayer = Players.LocalPlayer
 local Camera = Workspace.CurrentCamera
 local PlayerGui = LocalPlayer:FindFirstChildOfClass("PlayerGui") or LocalPlayer:WaitForChild("PlayerGui")
 
--- Registry สำหรับเก็บ Connections ทั้งหมดเพื่อป้องกัน Memory Leak
+-- Registry สำหรับจัดการ Connection ป้องกัน Memory Leak
 local ActiveConnections = {}
-
-local function RegisterConnection(connection)
-    table.insert(ActiveConnections, connection)
-    return connection
+local function RegisterConnection(conn)
+    table.insert(ActiveConnections, conn)
+    return conn
 end
 
 local function Cleanup()
@@ -35,15 +32,15 @@ local function Cleanup()
     table.clear(ActiveConnections)
 end
 
--- Safe Cleanup UI เก่า
+-- Safe UI Cleanup
 pcall(function()
     Cleanup()
-    if CoreGui:FindFirstChild("NoxusDecadeUI") then CoreGui.NoxusDecadeUI:Destroy() end
-    if PlayerGui:FindFirstChild("NoxusDecadeUI") then PlayerGui.PlayerGui.NoxusDecadeUI:Destroy() end
+    if CoreGui:FindFirstChild("NoxusApexUI") then CoreGui.NoxusApexUI:Destroy() end
+    if PlayerGui:FindFirstChild("NoxusApexUI") then PlayerGui.PlayerGui.NoxusApexUI:Destroy() end
 end)
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "NoxusDecadeUI"
+ScreenGui.Name = "NoxusApexUI"
 ScreenGui.ResetOnSpawn = false
 pcall(function() ScreenGui.Parent = CoreGui end)
 if not ScreenGui.Parent then ScreenGui.Parent = PlayerGui end
@@ -58,15 +55,15 @@ local function playClickSound()
     pcall(function() ClickSound:Play() end)
 end
 
--- Enterprise Notification System
+-- Premium Notification
 local function sendNotification(title, text)
     pcall(function()
         local NotifHolder = ScreenGui:FindFirstChild("NotifHolder")
         if not NotifHolder then
             NotifHolder = Instance.new("Frame")
             NotifHolder.Name = "NotifHolder"
-            NotifHolder.Size = UDim2.new(0, 270, 1, 0)
-            NotifHolder.Position = UDim2.new(1, -280, 0, 15)
+            NotifHolder.Size = UDim2.new(0, 280, 1, 0)
+            NotifHolder.Position = UDim2.new(1, -290, 0, 15)
             NotifHolder.BackgroundTransparency = 1
             NotifHolder.Parent = ScreenGui
             
@@ -78,14 +75,14 @@ local function sendNotification(title, text)
         
         local NotifBox = Instance.new("Frame")
         NotifBox.Size = UDim2.new(1, 0, 0, 52)
-        NotifBox.BackgroundColor3 = Color3.fromRGB(10, 10, 16)
+        NotifBox.BackgroundColor3 = Color3.fromRGB(12, 14, 22)
         NotifBox.Position = UDim2.new(1, 50, 0, 0)
         NotifBox.BorderSizePixel = 0
         NotifBox.Parent = NotifHolder
         
         Instance.new("UICorner", NotifBox).CornerRadius = UDim.new(0, 12)
         local stroke = Instance.new("UIStroke", NotifBox)
-        stroke.Color = Color3.fromRGB(0, 200, 255)
+        stroke.Color = Color3.fromRGB(0, 230, 255)
         stroke.Thickness = 1.8
         
         local TitleLabel = Instance.new("TextLabel", NotifBox)
@@ -103,7 +100,7 @@ local function sendNotification(title, text)
         DescLabel.Position = UDim2.new(0, 12, 0, 26)
         DescLabel.BackgroundTransparency = 1
         DescLabel.Text = text
-        DescLabel.TextColor3 = Color3.fromRGB(190, 205, 225)
+        DescLabel.TextColor3 = Color3.fromRGB(200, 215, 235)
         DescLabel.TextSize = 11
         DescLabel.Font = Enum.Font.GothamBold
         DescLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -120,13 +117,13 @@ local function sendNotification(title, text)
     end)
 end
 
--- Floating Cyber Logo Button
+-- Floating Logo Button
 local ToggleBtn = Instance.new("TextButton", ScreenGui)
 ToggleBtn.Size = UDim2.new(0, 52, 0, 52)
 ToggleBtn.Position = UDim2.new(0, 20, 0, 20)
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(8, 8, 14)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(10, 12, 18)
 ToggleBtn.Text = "N"
-ToggleBtn.TextColor3 = Color3.fromRGB(0, 220, 255)
+ToggleBtn.TextColor3 = Color3.fromRGB(0, 230, 255)
 ToggleBtn.TextSize = 24
 ToggleBtn.Font = Enum.Font.FredokaOne
 ToggleBtn.Active = true
@@ -137,11 +134,11 @@ local ToggleStroke = Instance.new("UIStroke", ToggleBtn)
 ToggleStroke.Color = Color3.fromRGB(0, 180, 255)
 ToggleStroke.Thickness = 2.5
 
--- Main Frame (Decade Edition UI)
+-- Main Frame (Apex Next-Gen UI)
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 480, 0, 310)
-MainFrame.Position = UDim2.new(0.5, -240, 0.5, -155)
-MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 18)
+MainFrame.Size = UDim2.new(0, 500, 0, 320)
+MainFrame.Position = UDim2.new(0.5, -250, 0.5, -160)
+MainFrame.BackgroundColor3 = Color3.fromRGB(14, 16, 24)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Draggable = true
@@ -152,24 +149,24 @@ MainStroke.Thickness = 2
 
 -- Top Bar Header
 local TopBar = Instance.new("Frame", MainFrame)
-TopBar.Size = UDim2.new(1, 0, 0, 40)
-TopBar.BackgroundColor3 = Color3.fromRGB(16, 16, 24)
+TopBar.Size = UDim2.new(1, 0, 0, 42)
+TopBar.BackgroundColor3 = Color3.fromRGB(18, 20, 30)
 TopBar.BorderSizePixel = 0
 Instance.new("UICorner", TopBar).CornerRadius = UDim.new(0, 18)
 
 local HubTitle = Instance.new("TextLabel", TopBar)
-HubTitle.Size = UDim2.new(0, 360, 1, 0)
+HubTitle.Size = UDim2.new(0, 380, 1, 0)
 HubTitle.Position = UDim2.new(0, 15, 0, 0)
 HubTitle.BackgroundTransparency = 1
-HubTitle.Text = "⚡ NOXUS MAGNUM OPUS | UNLIMITED EDITION"
-HubTitle.TextColor3 = Color3.fromRGB(0, 220, 255)
-HubTitle.TextSize = 10.5
+HubTitle.Text = "⚡ NOXUS APEX HUB | BLOX FRUITS [MASTERPIECE]"
+HubTitle.TextColor3 = Color3.fromRGB(0, 230, 255)
+HubTitle.TextSize = 11
 HubTitle.Font = Enum.Font.FredokaOne
 HubTitle.TextXAlignment = Enum.TextXAlignment.Left
 
 local CloseBtn = Instance.new("TextButton", TopBar)
 CloseBtn.Size = UDim2.new(0, 26, 0, 26)
-CloseBtn.Position = UDim2.new(1, -34, 0, 7)
+CloseBtn.Position = UDim2.new(1, -36, 0, 8)
 CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 60)
 CloseBtn.Text = "✕"
 CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -190,9 +187,9 @@ end))
 
 -- Sidebar Tabs
 local Sidebar = Instance.new("Frame", MainFrame)
-Sidebar.Size = UDim2.new(0, 125, 1, -40)
-Sidebar.Position = UDim2.new(0, 0, 0, 40)
-Sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 22)
+Sidebar.Size = UDim2.new(0, 130, 1, -42)
+Sidebar.Position = UDim2.new(0, 0, 0, 42)
+Sidebar.BackgroundColor3 = Color3.fromRGB(16, 18, 26)
 Sidebar.BorderSizePixel = 0
 
 local SidebarLayout = Instance.new("UIListLayout", Sidebar)
@@ -201,8 +198,8 @@ SidebarLayout.Padding = UDim.new(0, 5)
 
 -- Content Pages Container
 local Container = Instance.new("Frame", MainFrame)
-Container.Size = UDim2.new(1, -130, 1, -48)
-Container.Position = UDim2.new(0, 130, 0, 44)
+Container.Size = UDim2.new(1, -135, 1, -50)
+Container.Position = UDim2.new(0, 135, 0, 46)
 Container.BackgroundTransparency = 1
 
 local pages = {}
@@ -211,7 +208,7 @@ local function createPage(name)
     page.Size = UDim2.new(1, 0, 1, 0)
     page.BackgroundTransparency = 1
     page.Visible = false
-    page.CanvasSize = UDim2.new(0, 0, 0, 340)
+    page.CanvasSize = UDim2.new(0, 0, 0, 350)
     page.ScrollBarThickness = 3
     
     local layout = Instance.new("UIListLayout", page)
@@ -236,10 +233,10 @@ showPage("Farm")
 
 local function createTab(text, targetPage)
     local btn = Instance.new("TextButton", Sidebar)
-    btn.Size = UDim2.new(1, -10, 0, 32)
-    btn.BackgroundColor3 = Color3.fromRGB(22, 22, 32)
+    btn.Size = UDim2.new(1, -10, 0, 34)
+    btn.BackgroundColor3 = Color3.fromRGB(22, 25, 36)
     btn.Text = text
-    btn.TextColor3 = Color3.fromRGB(170, 185, 205)
+    btn.TextColor3 = Color3.fromRGB(180, 195, 215)
     btn.TextSize = 11
     btn.Font = Enum.Font.GothamBold
     btn.BorderSizePixel = 0
@@ -259,10 +256,10 @@ createTab("⚙️ Visuals / FPS", "Visuals")
 -- Component Builders
 local function makeToggle(parent, text, callback)
     local btn = Instance.new("TextButton", parent)
-    btn.Size = UDim2.new(1, -5, 0, 34)
-    btn.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+    btn.Size = UDim2.new(1, -5, 0, 35)
+    btn.BackgroundColor3 = Color3.fromRGB(20, 23, 32)
     btn.Text = text .. ": OFF"
-    btn.TextColor3 = Color3.fromRGB(210, 220, 235)
+    btn.TextColor3 = Color3.fromRGB(220, 230, 245)
     btn.TextSize = 11
     btn.Font = Enum.Font.GothamBold
     btn.BorderSizePixel = 0
@@ -273,7 +270,7 @@ local function makeToggle(parent, text, callback)
         playClickSound()
         state = not state
         btn.Text = text .. ": " .. (state and "ON" or "OFF")
-        btn.TextColor3 = state and Color3.fromRGB(0, 255, 120) or Color3.fromRGB(210, 220, 235)
+        btn.TextColor3 = state and Color3.fromRGB(0, 255, 120) or Color3.fromRGB(220, 230, 245)
         callback(state)
     end))
     return btn
@@ -281,12 +278,12 @@ end
 
 local function makeBox(parent, placeholder, callback)
     local box = Instance.new("TextBox", parent)
-    box.Size = UDim2.new(1, -5, 0, 32)
-    box.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+    box.Size = UDim2.new(1, -5, 0, 34)
+    box.BackgroundColor3 = Color3.fromRGB(20, 23, 32)
     box.Text = ""
-    box.TextColor3 = Color3.fromRGB(0, 220, 255)
+    box.TextColor3 = Color3.fromRGB(0, 230, 255)
     box.PlaceholderText = placeholder
-    box.PlaceholderColor3 = Color3.fromRGB(110, 120, 140)
+    box.PlaceholderColor3 = Color3.fromRGB(120, 135, 155)
     box.TextSize = 11
     box.Font = Enum.Font.GothamBold
     box.BorderSizePixel = 0
@@ -304,13 +301,9 @@ end
 local autoFarmOn = false
 local fastAttackOn = false
 
-makeToggle(farmPage, "Auto Farm (Smooth Flight)", function(v)
+makeToggle(farmPage, "Auto Farm (Safe High-Flight)", function(v)
     autoFarmOn = v
-    if v then
-        sendNotification("Auto Farm", "Decade Engine Started (Unlimited)")
-    else
-        sendNotification("Auto Farm", "Engine Halted")
-    end
+    sendNotification("Auto Farm", v and "Apex High-Altitude Farm Active" or "Stopped")
 end)
 
 makeToggle(farmPage, "Fast Attack Boost", function(v)
@@ -348,10 +341,10 @@ end)
 -- ==================== 3. TELEPORT PAGE ====================
 local function addTpButton(name, cf)
     local btn = Instance.new("TextButton", telePage)
-    btn.Size = UDim2.new(1, -5, 0, 34)
-    btn.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+    btn.Size = UDim2.new(1, -5, 0, 35)
+    btn.BackgroundColor3 = Color3.fromRGB(20, 23, 32)
     btn.Text = "📍 Teleport to " .. name
-    btn.TextColor3 = Color3.fromRGB(210, 220, 235)
+    btn.TextColor3 = Color3.fromRGB(220, 230, 245)
     btn.TextSize = 11
     btn.Font = Enum.Font.GothamBold
     btn.BorderSizePixel = 0
@@ -375,7 +368,7 @@ local potatoOn = false
 
 makeToggle(visualPage, "Potato Graphics (ดินน้ำมัน)", function(v)
     potatoOn = v
-    sendNotification("Graphics", v and "Potato Engine Enabled (Zero Lag)" or "Normal Graphics")
+    sendNotification("Graphics", v and "Apex Potato Engine Enabled (Zero Lag)" or "Normal Graphics")
     pcall(function()
         if v then
             Lighting.GlobalShadows = false
@@ -399,7 +392,7 @@ makeToggle(visualPage, "Potato Graphics (ดินน้ำมัน)", function
 end)
 
 local RejoinBtn = Instance.new("TextButton", visualPage)
-RejoinBtn.Size = UDim2.new(1, -5, 0, 34)
+RejoinBtn.Size = UDim2.new(1, -5, 0, 35)
 RejoinBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 70)
 RejoinBtn.Text = "🔄 Rejoin Server"
 RejoinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -415,12 +408,12 @@ RegisterConnection(RejoinBtn.MouseButton1Click:Connect(function()
     end)
 end))
 
--- ==================== DECADE-VERIFIED MASTER CORE LOOP ====================
+-- ==================== APEX MASTER CORE LOOP ====================
 local currentTween = nil
 
 RegisterConnection(RunService.RenderStepped:Connect(function()
     pcall(function()
-        -- 1. Advanced Tween Flight Engine (Unlimited Mode)
+        -- 1. High-Altitude Safe Tween Flight Engine (Fixed low flying bug)
         if autoFarmOn then
             local char = LocalPlayer.Character
             local hrp = char and char:FindFirstChild("HumanoidRootPart")
@@ -439,9 +432,10 @@ RegisterConnection(RunService.RenderStepped:Connect(function()
                 end
                 
                 if targetEnemy then
-                    local targetCFrame = targetEnemy.CFrame + Vector3.new(0, 5, 0)
+                    -- บินลอยสูงขึ้นไป 28 หน่วยเหนือหัวมอนสเตอร์ ปลอดภัยจากการโดนโจมตีระยะประชิด
+                    local targetCFrame = targetEnemy.CFrame + Vector3.new(0, 28, 0)
                     local dist = (hrp.Position - targetCFrame.Position).Magnitude
-                    local speed = 350
+                    local speed = 320
                     local timeSec = dist / speed
                     
                     if not currentTween or currentTween.PlaybackState ~= Enum.PlaybackState.Playing then
@@ -450,6 +444,12 @@ RegisterConnection(RunService.RenderStepped:Connect(function()
                         currentTween:Play()
                     end
                     
+                    -- บังคับถืออาวุธและจำลองการโจมตี
+                    for _, tool in ipairs(LocalPlayer.Backpack:GetChildren()) do
+                        if tool:IsA("Tool") then
+                            tool.Parent = char
+                        end
+                    end
                     VirtualUser:Button1Down(Vector2.new(0,0))
                 else
                     if currentTween then currentTween:Cancel() end
@@ -462,7 +462,7 @@ RegisterConnection(RunService.RenderStepped:Connect(function()
             end
         end
 
-        -- 2. Optimized Fast Attack Logic
+        -- 2. Fast Attack Boost Logic
         if fastAttackOn then
             pcall(function()
                 VirtualUser:Button1Down(Vector2.new(0,0))
@@ -485,15 +485,15 @@ RegisterConnection(RunService.RenderStepped:Connect(function()
             end
         end
 
-        -- 4. Memory-Safe ESP Engine
+        -- 4. ESP Box Engine
         if espOn then
             for _, p in ipairs(Players:GetPlayers()) do
                 if p ~= LocalPlayer and p.Character then
                     local pChar = p.Character
-                    if not pChar:FindFirstChild("NoxusDecadeESP") then
+                    if not pChar:FindFirstChild("NoxusApexESP") then
                         local hl = Instance.new("Highlight", pChar)
-                        hl.Name = "NoxusDecadeESP"
-                        hl.FillColor = Color3.fromRGB(0, 180, 255)
+                        hl.Name = "NoxusApexESP"
+                        hl.FillColor = Color3.fromRGB(0, 230, 255)
                         hl.OutlineColor = Color3.fromRGB(255, 255, 255)
                         hl.FillTransparency = 0.5
                     end
@@ -501,12 +501,12 @@ RegisterConnection(RunService.RenderStepped:Connect(function()
             end
         else
             for _, p in ipairs(Players:GetPlayers()) do
-                if p.Character and p.Character:FindFirstChild("NoxusDecadeESP") then
-                    p.Character.NoxusDecadeESP:Destroy()
+                if p.Character and p.Character:FindFirstChild("NoxusApexESP") then
+                    p.Character.NoxusApexESP:Destroy()
                 end
             end
         end
     end)
 end))
 
-sendNotification("Noxus Hub", "Magnum Opus Unlimited Edition Loaded Successfully!")
+sendNotification("Noxus Hub", "Apex Masterpiece Edition Loaded Successfully!")
